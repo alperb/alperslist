@@ -1,15 +1,22 @@
 from flask import Flask, render_template, request
 
-from mysql.connector import connect
+import mysql.connector as mysql
 
 app = Flask(__name__)
 
-db = connect(
-    host="db",
-    user="root",
-    password="root123",
-    database="alperslist"
-)
+db: mysql.MySQLConnection = None
+
+def get_conn():
+    global db
+    if db.is_connected() == False:
+        db = mysql.connect(
+            host="db",
+            user="root",
+            password="root123",
+            database="alperslist"
+        )
+    else:
+        return db
 
 
 @app.route("/", methods=["GET"])
