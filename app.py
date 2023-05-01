@@ -8,7 +8,7 @@ db: mysql.MySQLConnection = None
 
 def get_conn():
     global db
-    if db.is_connected() == False:
+    if db is None or db.is_connected() is False:
         db = mysql.connect(
             host="db",
             user="root",
