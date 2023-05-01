@@ -15,6 +15,7 @@ def get_conn():
             password="root123",
             database="alperslist"
         )
+        return db
     else:
         return db
 
