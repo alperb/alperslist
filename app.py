@@ -23,7 +23,7 @@ def get_conn():
 def index():
     page = request.args.get("page", 1, type=int)
     limit = 10
-    cursor = db.cursor()
+    cursor = get_conn().cursor()
     cursor.execute("SELECT * FROM ads WHERE valid = 1 LIMIT %s OFFSET %s", (limit, (page - 1) * limit))
     ads = cursor.fetchall()
     return render_template("index.html", ads=ads, current_page=page)
@@ -33,7 +33,7 @@ def index():
 def search():
     page = request.args.get("page", 1, type=int)
     limit = 10
-    cursor = db.cursor()
+    cursor = get_conn().cursor()
     query = f"SELECT * FROM ads WHERE title LIKE '{request.form['search']}' LIMIT {limit} OFFSET {(page - 1) * limit}"
     cursor.execute(query)
     ads = cursor.fetchall()
@@ -42,13 +42,13 @@ def search():
 
 @app.route("/download/<pid>", methods=["POST"])
 def download(pid):
-    cursor = db.cursor()
+    cursor = get_conn().cursor()
     cursor.execute(f"""SELECT * FROM purchases WHERE 
                    purchase_ad = {pid} AND 
                    purchase_key = '{request.form['purchase_key']}'""")
     ad = cursor.fetchone()
     if ad:
-        cursor = db.cursor()
+        cursor = get_conn().cursor()
         cursor.execute(f"SELECT * FROM ads WHERE id = {pid}")
         ad_row = cursor.fetchone()
         f = open(f"uploaded/{ad_row[3]}", "r")
@@ -58,7 +58,7 @@ def download(pid):
 
 @app.route("/purchased", methods=["GET"])
 def purchased():
-    cursor = db.cursor()
+    cursor = get_conn().cursor()
     search = request.args.get("search")
 
     if not search:
