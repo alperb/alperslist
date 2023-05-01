@@ -7,13 +7,11 @@ services:
       - "5505:5000"
     depends_on:
       - db
-    networks:
-      - internal
-      - default
+
   db:
     image: mysql:5.7
     volumes:
-      - db_data_renewtest:/var/lib/mysql
+      - ./data:/var/lib/mysql
       - ./dump:/dump
     restart: always
     ports:
@@ -22,14 +20,3 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root123
       MYSQL_DATABASE: alperslist
-    networks:
-      - internal
-
-
-networks:
-  default:
-  internal:
-    internal: true
-
-volumes:
-  db_data_renewtest:
